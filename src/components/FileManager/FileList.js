@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Space, Button, message } from 'antd';
+import { Table, Space, Button } from 'antd';
 import { DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const FileList = ({ files, onDelete }) => {
@@ -26,8 +26,8 @@ const FileList = ({ files, onDelete }) => {
         <Space>
           <Button icon={<DownloadOutlined />}>Download</Button>
           <Button 
-            icon={<DeleteOutlined />} 
-            danger
+             icon={<DeleteOutlined />}
+             danger
             onClick={() => onDelete(record.id)}
           >
             Delete
@@ -40,4 +40,4 @@ const FileList = ({ files, onDelete }) => {
   return <Table columns={columns} dataSource={files} />;
 };
 
-export default FileList;  
+export default FileList;

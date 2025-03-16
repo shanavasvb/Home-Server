@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, message, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const { Title } = Typography;
@@ -34,10 +34,10 @@ const Login = () => {
 
   return (
     <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh',
+       display: 'flex',
+       justifyContent: 'center',
+       alignItems: 'center',
+       height: '100vh',
       background: '#f0f2f5'
     }}>
       <Card style={{ width: 400, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
@@ -62,20 +62,23 @@ const Login = () => {
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
           >
-            <Input.Password 
-              prefix={<LockOutlined />} 
-              placeholder="Password" 
-              size="large" 
-            />
+            <Input.Password
+               prefix={<LockOutlined />}
+               placeholder="Password"
+               size="large"
+             />
           </Form.Item>
 
           <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
-            <a style={{ float: 'right' }} href="#">
+            <Button 
+              type="link" 
+              style={{ float: 'right', padding: 0 }}
+            >
               Forgot password
-            </a>
+            </Button>
           </Form.Item>
 
           <Form.Item>

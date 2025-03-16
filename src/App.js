@@ -5,7 +5,7 @@ import MainLayout from './components/Layout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import FilesPage from './pages/FilesPage';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
+// import Signup from './pages/Signup';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 
@@ -20,46 +20,46 @@ const App = () => {
             {/* <Route path="/signup" element={<Signup />} /> */}
             
             {/* Protected routes */}
-            <Route 
-              path="/" 
-              element={
+            <Route
+               path="/"
+               element={
                 <ProtectedRoute>
                   <MainLayout>
                     <Dashboard />
                   </MainLayout>
                 </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/files" 
-              element={
+              }
+             />
+            <Route
+               path="/files"
+               element={
                 <ProtectedRoute>
                   <MainLayout>
                     <FilesPage />
                   </MainLayout>
                 </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/photos" 
-              element={
+              }
+             />
+            <Route
+               path="/photos"
+               element={
                 <ProtectedRoute>
                   <MainLayout>
                     <FilesPage type="photos" />
                   </MainLayout>
                 </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/videos" 
-              element={
+              }
+             />
+            <Route
+               path="/videos"
+               element={
                 <ProtectedRoute>
                   <MainLayout>
                     <FilesPage type="videos" />
                   </MainLayout>
                 </ProtectedRoute>
-              } 
-            />
+              }
+             />
             
             {/* Redirect any unknown routes to Dashboard */}
             <Route path="*" element={<Navigate to="/" replace />} />

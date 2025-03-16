@@ -1,182 +1,93 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Tabs, message } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Card, Typography, message, Checkbox } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const { Title } = Typography;
+
 const Login = () => {
-  const [activeTab, setActiveTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  
+  const from = location.state?.from?.pathname || '/';
 
-  const handleLogin = async (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
     try {
-      await login(values);
+      await login({
+        username: values.username,
+        password: values.password
+      });
+      
       message.success('Login successful!');
-      navigate('/');
+      navigate(from, { replace: true });
     } catch (error) {
-      message.error('Login failed! Please check your credentials.');
+      console.error('Login error:', error);
+      message.error(error.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
-
-  const handleSignup = async (values) => {
-    setLoading(true);
-    try {
-      // Implement signup API call here
-      message.success('Signup successful! Please login.');
-      setActiveTab('login');
-    } catch (error) {
-      message.error('Signup failed! Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loginForm = (
-    <Form name="login" onFinish={handleLogin}>
-      <Form.Item
-        name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <Input 
-          prefix={<UserOutlined />} 
-          placeholder="Username" 
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input.Password
-          prefix={<LockOutlined />}
-          placeholder="Password"
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button 
-          type="primary" 
-          htmlType="submit" 
-          style={{ width: '100%' }} 
-          size="large"
-          loading={loading}
-        >
-          Log in
-        </Button>
-      </Form.Item>
-    </Form>
-  );
-
-  const signupForm = (
-    <Form name="signup" onFinish={handleSignup}>
-      <Form.Item
-        name="email"
-        rules={[
-          { required: true, message: 'Please input your email!' },
-          { type: 'email', message: 'Please enter a valid email!' }
-        ]}
-      >
-        <Input 
-          prefix={<MailOutlined />} 
-          placeholder="Email" 
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item
-        name="username"
-        rules={[
-          { required: true, message: 'Please input your username!' },
-          { min: 3, message: 'Username must be at least 3 characters!' }
-        ]}
-      >
-        <Input 
-          prefix={<UserOutlined />} 
-          placeholder="Username" 
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[
-          { required: true, message: 'Please input your password!' },
-          { min: 6, message: 'Password must be at least 6 characters!' }
-        ]}
-      >
-        <Input.Password
-          prefix={<LockOutlined />}
-          placeholder="Password"
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item
-        name="confirmPassword"
-        dependencies={['password']}
-        rules={[
-          { required: true, message: 'Please confirm your password!' },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('Passwords do not match!'));
-            },
-          }),
-        ]}
-      >
-        <Input.Password
-          prefix={<LockOutlined />}
-          placeholder="Confirm Password"
-          size="large"
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button 
-          type="primary" 
-          htmlType="submit" 
-          style={{ width: '100%' }} 
-          size="large"
-          loading={loading}
-        >
-          Sign up
-        </Button>
-      </Form.Item>
-    </Form>
-  );
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh',
       background: '#f0f2f5'
     }}>
-      <Card style={{ width: 400 }}>
+      <Card style={{ width: 400, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <h2>Home-Server</h2>
+          <Title level={2}>Login</Title>
         </div>
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          centered
-          items={[
-            {
-              key: 'login',
-              label: 'Login',
-              children: loginForm,
-            },
-            {
-              key: 'signup',
-              label: 'Sign Up',
-              children: signupForm,
-            },
-          ]}
-        />
+        
+        <Form
+          name="login"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          layout="vertical"
+        >
+          <Form.Item
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Username" size="large" />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password 
+              prefix={<LockOutlined />} 
+              placeholder="Password" 
+              size="large" 
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+            <a style={{ float: 'right' }} href="#">
+              Forgot password
+            </a>
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" size="large" block loading={loading}>
+              Log in
+            </Button>
+          </Form.Item>
+          
+          {/* <div style={{ textAlign: 'center' }}>
+            Don't have an account? <Link to="/signup">Sign up now</Link>
+          </div> */}
+        </Form>
       </Card>
     </div>
   );

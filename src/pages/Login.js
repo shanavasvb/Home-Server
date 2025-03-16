@@ -84,17 +84,7 @@ const Login = () => {
              />
           </Form.Item>
 
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-            <Button 
-              type="link" 
-              style={{ float: 'right', padding: 0 }}
-            >
-              Forgot password
-            </Button>
-          </Form.Item>
+
 
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" block loading={loading}>

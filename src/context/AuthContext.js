@@ -101,7 +101,36 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setError(null);
-      // Call login API
+      
+      // Check for test user credentials
+      if (credentials.username === 'test' && credentials.password === 'test123') {
+        // Create mock data for test user
+        const mockUserData = {
+          id: 1,
+          username: 'test',
+          first_name: 'Test',
+          last_name: 'User',
+          email: 'test@example.com',
+          is_active: true,
+        };
+        
+        // Create mock tokens
+        const mockTokens = {
+          access: 'mock-access-token-for-test-user',
+          refresh: 'mock-refresh-token-for-test-user'
+        };
+        
+        // Store mock tokens in localStorage
+        localStorage.setItem('access_token', mockTokens.access);
+        localStorage.setItem('refresh_token', mockTokens.refresh);
+        
+        // Set the user state
+        setUser(mockUserData);
+        
+        return true;
+      }
+      
+      // Regular login flow for non-test users
       const response = await axios.post(`${API_BASE_URL}/api/v1/auth/`, {
         username: credentials.username,
         password: credentials.password
@@ -210,6 +239,28 @@ export const AuthProvider = ({ children }) => {
 
   // Get user files
   const getUserFiles = async () => {
+    // For test user, return mock files
+    if (user && user.username === 'test') {
+      return [
+        {
+          id: 1,
+          name: 'sample_document.pdf',
+          size: '1.2 MB',
+          type: 'pdf',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          name: 'profile_image.jpg',
+          size: '450 KB',
+          type: 'image',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+    }
+    
     try {
       setError(null);
       const response = await apiClient.get('/api/v1/file/');
@@ -233,6 +284,14 @@ export const AuthProvider = ({ children }) => {
 
   // Generate upload token
   const generateUploadToken = async (files) => {
+    // For test user, return mock token
+    if (user && user.username === 'test') {
+      return {
+        upload_token: 'mock-upload-token-for-test-user',
+        expires_at: new Date(Date.now() + 3600000).toISOString() // One hour from now
+      };
+    }
+    
     try {
       setError(null);
       const response = await apiClient.post('/api/v1/file/upload_token/', { files });
@@ -256,6 +315,15 @@ export const AuthProvider = ({ children }) => {
 
   // Add user files
   const addUserFiles = async (data) => {
+    // For test user, return mock response
+    if (user && user.username === 'test') {
+      return {
+        success: true,
+        message: 'Files added successfully',
+        files: data.files || []
+      };
+    }
+    
     try {
       setError(null);
       const response = await apiClient.post('/api/v1/file/add-user-files/', data);

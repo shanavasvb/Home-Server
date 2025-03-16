@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, Typography, message, Checkbox } from 'antd';
+import { Form, Input, Button, Card, Typography, message, Checkbox, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -16,6 +17,8 @@ const Login = () => {
 
   const onFinish = async (values) => {
     setLoading(true);
+    setErrorMessage(''); // Clear any previous error messages
+    
     try {
       await login({
         username: values.username,
@@ -26,7 +29,8 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
-      message.error(error.message || 'Login failed');
+      // Set error message to be displayed in the UI
+      setErrorMessage(error.message || 'Failed to login. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -44,6 +48,17 @@ const Login = () => {
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <Title level={2}>Login</Title>
         </div>
+        
+        {/* Display error message if there is one */}
+        {errorMessage && (
+          <Alert
+            message="Login Error"
+            description={errorMessage}
+            type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )}
         
         <Form
           name="login"
